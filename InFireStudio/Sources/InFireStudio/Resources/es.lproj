@@ -1,0 +1,5 @@
+
+"networkFailure"      = "Fallo de conexión de red.";
+"invalidConfig"       = "Configuración inválida.";
+"authenticationError" = "Error de autenticación.";
+"unknownError"        = "Ocurrió un error desconocido.";

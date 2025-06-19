@@ -1,0 +1,13 @@
+//
+//  File.swift
+//  InFireStudio
+//
+//  Created by furkan vural on 17.06.2025.
+//
+
+
+"networkFailure"      = "Netzwerkverbindung fehlgeschlagen.";
+"invalidConfig"       = "Ungültige Konfiguration.";
+"authenticationError" = "Authentifizierungsfehler.";
+"unknownError"        = "Ein unbekannter Fehler ist aufgetreten.";
+
