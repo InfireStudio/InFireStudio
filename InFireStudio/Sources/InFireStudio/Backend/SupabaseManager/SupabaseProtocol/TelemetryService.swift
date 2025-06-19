@@ -10,7 +10,7 @@ import Supabase
 
 /// Log/Metric gönderimini soyutlayan protokol
 public protocol LogService {
-    func logError(_ app: InFireStudioApps, _ message: String, metadata: [String: String]?) async
+    func logError(_ app: InFireStudioApps, _ message: ErrorLoggingMessage, metadata: [String: String]?) async
 }
 
 
@@ -25,15 +25,17 @@ public final class SupabaseLogService: LogService {
     public init() { }
     
     /// Supabase database tüm applerin içinden gönderilen hata mesajı
-    ///  app: InFireStudioApps içindeki enumdan geliyor. Bu enum tüm applerin ismini içeriyor
-    public func logError(_ app: InFireStudioApps, _ message: String, metadata: [String: String]? = nil) async {
+    /// app: InFireStudioApps içindeki enumdan geliyor. Bu enum tüm applerin ismini içeriyor.
+    ///
+    public func logError(_ app: InFireStudioApps, _ message: ErrorLoggingMessage, metadata: [String: String]? = nil) async {
+        
         let row = ErrorLogRow(
-            message: message,
+            message: message.rawValue,
             metadata: metadata ?? [:]
         )
         
         do {
-            let _ = try await client.database
+            let _ = try await client
                 .from(app.rawValue)
                 .insert(row)
                 .execute()
@@ -41,9 +43,32 @@ public final class SupabaseLogService: LogService {
             print("Supabase insert error:", error)
         }
     }
+    
+    /// Supabase'den all app config bilgilerini çeker.
+    /// Buradaki gelen data feedbackIsAvailable olacak.
+    /// Eğer true ise kullanıcı feedback verebileceği bir view ile kullanıcıdan feedback alınabilecek
+    /// showNewPaywall değeri userdefaults ile check edildikten sonra bakılacak.
+    public func fetchAllAppConfig() async throws -> [Instrument] {
+        let instruments: [Instrument] = try await client
+            .from("infire_studio_config")
+            .select()
+            .execute()
+            .value
+        return instruments
+    }
 }
 
+// Move File
 public struct ErrorLogRow: Encodable, Sendable {
     let message: String
     let metadata: [String: String]
+}
+
+// Move File
+@MainActor
+public struct Instrument: Codable {
+    let id: String
+    let feedback_is_available: Bool
+    let hard_paywall: Bool
+    let show_new_app: String
 }

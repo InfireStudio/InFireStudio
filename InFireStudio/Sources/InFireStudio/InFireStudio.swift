@@ -6,6 +6,7 @@ import Foundation
 public final class InFireStudio {
     
     
-
+    // SDK başlat. SDK -> Mixpanel, Supabase, Revenucat, Firebase bunları başlat.
+    
     
 }
