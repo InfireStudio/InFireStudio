@@ -1,6 +1,7 @@
+// swift-tools-version:6.0
+
 import PackageDescription
 
-// swift-tools-version:6.0
 let package = Package(
     name: "InFireStudio",
     platforms: [

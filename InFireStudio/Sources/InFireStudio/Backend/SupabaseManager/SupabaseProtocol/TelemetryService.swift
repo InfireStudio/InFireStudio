@@ -56,6 +56,17 @@ public final class SupabaseLogService: LogService {
             .value
         return instruments
     }
+    
+    public func sendFeedback(_ feedback: Feedback) async {
+        do {
+            let _ = try await client
+                .from("infire_studio_app_feedback")
+                .insert(feedback)
+                .execute()
+        } catch {
+            print("Feedback Insert Error:\(error.localizedDescription)")
+        }
+    }
 }
 
 // Move File

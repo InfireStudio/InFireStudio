@@ -18,7 +18,7 @@ internal class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = .black
         setupUI()
         buildSettingsUI()
     }
