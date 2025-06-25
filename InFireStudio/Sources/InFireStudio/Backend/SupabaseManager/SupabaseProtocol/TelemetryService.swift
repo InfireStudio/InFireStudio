@@ -10,7 +10,7 @@ import Supabase
 
 /// Log/Metric gönderimini soyutlayan protokol
 public protocol LogService {
-    func logError(_ app: InFireStudioApps, _ message: ErrorLoggingMessage, metadata: [String: String]?) async
+    func logError(_ app: InFireStudioApps, appName: String, _ message: ErrorLoggingMessage, metadata: [String: String]?) async
 }
 
 
@@ -22,16 +22,19 @@ public final class SupabaseLogService: LogService {
         supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3cHRveWd3YXBrdnl2ZXNvZ2J5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDI4NzcsImV4cCI6MjA2NTY3ODg3N30.dZc8LgDO7ZGj84K35G5vO7cOuZ8xeZ2HBcuBGogfaOM"
     )
     
+    private var realtimeSubscription: RealtimeChannel?
     public init() { }
     
     /// Supabase database tüm applerin içinden gönderilen hata mesajı
     /// app: InFireStudioApps içindeki enumdan geliyor. Bu enum tüm applerin ismini içeriyor.
     ///
-    public func logError(_ app: InFireStudioApps, _ message: ErrorLoggingMessage, metadata: [String: String]? = nil) async {
+    public func logError(_ app: InFireStudioApps, appName: String, _ message: ErrorLoggingMessage, metadata: [String: String]? = nil) async {
         
         let row = ErrorLogRow(
+            appName: appName,
             message: message.rawValue,
-            metadata: metadata ?? [:]
+            metadata: metadata ?? [:],
+            status: .waiting
         )
         
         do {
@@ -67,12 +70,27 @@ public final class SupabaseLogService: LogService {
             print("Feedback Insert Error:\(error.localizedDescription)")
         }
     }
+
 }
 
 // Move File
 public struct ErrorLogRow: Encodable, Sendable {
+    let appName: String
     let message: String
     let metadata: [String: String]
+    let status: Status
+    
+    enum CodingKeys: String, CodingKey {
+        case appName = "app_name"
+        case message
+        case metadata
+        case status
+    }
+}
+
+public enum Status: String, Codable, Sendable {
+    case waiting
+    case done
 }
 
 // Move File

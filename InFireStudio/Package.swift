@@ -19,12 +19,30 @@ let package = Package(
             url: "https://github.com/supabase/supabase-swift.git",
             from: "2.0.0"
         ),
+        .package(
+            url: "https://github.com/mixpanel/mixpanel-swift",
+            from: "4.0.0"
+        ),
+        .package(
+            url: "https://github.com/firebase/firebase-ios-sdk.git",
+            from: "11.0.0"
+        ),
     ],
     targets: [
         .target(
             name: "InFireStudio",
             dependencies: [
-                .product(name: "Supabase", package: "supabase-swift")
+                .product(name: "Supabase", package: "supabase-swift"),
+                .product(name: "Mixpanel", package: "mixpanel-swift"),
+                .product(name: "FirebaseCore", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseFirestore", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseCrashlytics", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseStorage", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseRemoteConfig", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseFunctions", package: "firebase-ios-sdk"),
             ],
             path: "Sources/InFireStudio",
             resources: [
@@ -38,4 +56,3 @@ let package = Package(
         ),
     ]
 )
-

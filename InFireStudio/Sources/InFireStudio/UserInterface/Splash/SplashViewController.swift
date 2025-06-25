@@ -81,22 +81,43 @@ public final class SplashViewController: UIViewController {
         brandLogo.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            // App Logo - Merkezde
+
             appLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             appLogo.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             appLogo.widthAnchor.constraint(lessThanOrEqualToConstant: 200),
             appLogo.heightAnchor.constraint(lessThanOrEqualToConstant: 200),
             
-            // Brand Info Label - Alt kısımda
             brandInfoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             brandInfoLabel.bottomAnchor.constraint(equalTo: brandLogo.topAnchor, constant: -10),
             
-            // Brand Logo - En altta
             brandLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             brandLogo.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
             brandLogo.widthAnchor.constraint(equalToConstant: 60),
             brandLogo.heightAnchor.constraint(equalToConstant: 60)
         ])
+        
+//        let x = MixpanelManager.shared
+//        x.configure(with: "9ada1dbd444f269fa256933d11ca38e0", userID: "FurkanV10")
+//        
+//        let trackValue =  TrackKey.pageName.rawValue
+//        
+//        x.track(event: "SplashVC Opened", properties: [
+//            TrackKey.eventName.rawValue : "SplashVC Opened",
+//            TrackKey.pageName.rawValue : "Splash View Controller",
+//            TrackKey.userID.rawValue : "Furkan V10"
+//        ])
+        
+        let x = SupabaseLogService()
+        
+        Task {
+            do {
+                let data = try await x.fetchAllAppConfig()
+                print("Data: \(data)")
+            } catch {
+                print("Error")
+            }
+        }
+        
     }
     
     private func startSplashSequence() {

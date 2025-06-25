@@ -26,7 +26,7 @@ public final class FeedbackSheetViewController: UIViewController {
     private let definitionLabel: UILabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 22)
-        label.textColor = .white
+        label.textColor = .label
         label.numberOfLines = 0
         label.textAlignment = .center
         label.text = "How was your experience?"
@@ -50,7 +50,7 @@ public final class FeedbackSheetViewController: UIViewController {
         button.backgroundColor = .clear
         button.layer.cornerRadius = 8
         // Başlangıçta soluk görünüm
-        button.alpha = 0.3
+        button.alpha = 0.6
         return button
     }()
     
@@ -62,7 +62,7 @@ public final class FeedbackSheetViewController: UIViewController {
         button.backgroundColor = .clear
         button.layer.cornerRadius = 8
         // Başlangıçta soluk görünüm
-        button.alpha = 0.3
+        button.alpha = 0.6
         return button
     }()
     
@@ -74,7 +74,7 @@ public final class FeedbackSheetViewController: UIViewController {
         button.backgroundColor = .clear
         button.layer.cornerRadius = 8
         // Başlangıçta soluk görünüm
-        button.alpha = 0.3
+        button.alpha = 0.6
         return button
     }()
     
@@ -85,23 +85,24 @@ public final class FeedbackSheetViewController: UIViewController {
         button.imageView?.contentMode = .scaleAspectFit
         button.backgroundColor = .clear
         button.layer.cornerRadius = 8
-        // Başlangıçta soluk görünüm
-        button.alpha = 0.3
+        
+        button.alpha = 0.6
         return button
     }()
     
     private let sendButton: UIButton = {
         let button = UIButton()
         button.setTitle("Send", for: .normal)
-        button.backgroundColor = .systemBlue
+        button.backgroundColor = .systemGreen
         button.layer.cornerRadius = 8
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 35, right: 0)
         return button
     }()
     
     private let thankYouLabel: UILabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 18)
-        label.textColor = .white.withAlphaComponent(0.8)
+        label.textColor = .label.withAlphaComponent(0.8)
         label.numberOfLines = 0
         label.textAlignment = .center
         label.text = "Thanks for feedback 🎉"
@@ -114,7 +115,7 @@ public final class FeedbackSheetViewController: UIViewController {
         self.feedback = feedback
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -124,7 +125,12 @@ public final class FeedbackSheetViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setupSheetPresentation()
         setupLayout()
+        
+        self.presentationController?.delegate = self
     }
+    
+    
+    
     
     private func setupSheetPresentation() {
         if let sheet = self.sheetPresentationController {
@@ -191,9 +197,9 @@ public final class FeedbackSheetViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             sendButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            sendButton.topAnchor.constraint(equalTo: stackView.centerYAnchor, constant: 60),
-            sendButton.heightAnchor.constraint(equalToConstant: 40),
-            sendButton.widthAnchor.constraint(equalToConstant: 170)
+            sendButton.topAnchor.constraint(equalTo: stackView.centerYAnchor, constant: 75),
+            sendButton.heightAnchor.constraint(equalToConstant: 100),
+            sendButton.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
         
         sendButton.addTarget(self, action: #selector(didClickedSendButton), for: .touchUpInside)
@@ -293,6 +299,14 @@ public final class FeedbackSheetViewController: UIViewController {
     }
 }
 
+@available(iOS 15.0, *)
+extension FeedbackSheetViewController: UIAdaptivePresentationControllerDelegate {
+    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        feedback.rating = Feedback.Rating.none.rawValue
+        sendFeedback(with: feedback)
+        UserDefaults.standard.set(true, forKey: "isFeedbackCompleted")
+    }
+}
 
 
 @MainActor
@@ -307,6 +321,7 @@ public struct Feedback: Codable {
     var screenName: String
     var isBugReport: Bool
     var feedbackType: String
+    var action: FeedbackAction
     
     // CodingKeys
     enum CodingKeys: String, CodingKey {
@@ -320,9 +335,10 @@ public struct Feedback: Codable {
         case screenName = "screen_name"
         case isBugReport = "is_bug_report"
         case feedbackType = "feedback_type"
+        case action
     }
-
-    public init(userId: String, rating: Rating, appVersion: String, appName: String, deviceModel: String, osVersion: String, locale: String, screenName: String, isBugReport: Bool, feedbackType: FeedbackType) {
+    
+    public init(userId: String, rating: Rating, appVersion: String, appName: String, deviceModel: String, osVersion: String, locale: String, screenName: String, isBugReport: Bool, feedbackType: FeedbackType, action: FeedbackAction) {
         self.userId = userId
         self.rating = rating.rawValue
         self.appVersion = appVersion
@@ -333,6 +349,7 @@ public struct Feedback: Codable {
         self.screenName = screenName
         self.isBugReport = isBugReport
         self.feedbackType = feedbackType.rawValue
+        self.action = action
     }
     
     public enum FeedbackType: String, Codable {
@@ -346,5 +363,12 @@ public struct Feedback: Codable {
         case normal
         case good
         case veryGood
+        case none
+    }
+    
+    @MainActor
+    public enum FeedbackAction: String, Codable {
+        case dismiss
+        case submit
     }
 }

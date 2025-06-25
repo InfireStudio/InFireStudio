@@ -13,6 +13,7 @@ import Foundation
 ///
 @MainActor
 public enum InFireStudioApps: String {
+    case sdk = "sdk_error_logs"
     case aiVideoGenerator = "pex_note_taker"
     case aiImageGenerator = "normal_ai_image_generator"
 }
