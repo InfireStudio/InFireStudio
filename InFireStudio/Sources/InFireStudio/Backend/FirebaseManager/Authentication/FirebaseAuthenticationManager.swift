@@ -86,7 +86,7 @@ public class FirebaseAuthenticationManager: NSObject, ObservableObject {
         }
     }
     
-    #error("App tamamen kapatılınca bunu çağırmak zorundasın")
+#warning("App tamamen kapatılınca bunu çağırmak zorundasın")
     /// Bunu çağırmak gerekebilir app kill olunca.
     /// 
     private func removeAuthListener() {
