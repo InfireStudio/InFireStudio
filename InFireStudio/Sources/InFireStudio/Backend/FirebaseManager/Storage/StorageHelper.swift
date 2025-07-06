@@ -9,7 +9,7 @@ import Foundation
 
 
 @MainActor
-public enum InFireStorageError: LocalizedError {
+public enum InFireStorageError: @preconcurrency LocalizedError {
     case invalidImageData
     case failedToGetDownloadURL
     case downloadFailed

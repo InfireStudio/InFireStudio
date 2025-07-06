@@ -18,7 +18,7 @@ internal class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .black
+        view.backgroundColor = .label
         setupUI()
         buildSettingsUI()
     }
@@ -64,8 +64,8 @@ internal class SettingsViewController: UIViewController {
     
     private func buildSettingsUI() {
         guard let config = settingsManager.config else { return }
+        view.backgroundColor = config.background == "dark" ? .blue : .green
         
-        // Premium View
         let premiumView = createPremiumView(config.settings.premiumView)
         stackView.addArrangedSubview(premiumView)
         
@@ -91,7 +91,7 @@ internal class SettingsViewController: UIViewController {
         
         button.addTarget(self, action: #selector(premiumButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 164).isActive = true
         
         return button
     }

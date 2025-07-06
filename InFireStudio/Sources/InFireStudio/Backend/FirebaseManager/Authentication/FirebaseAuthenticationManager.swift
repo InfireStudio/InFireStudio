@@ -10,41 +10,6 @@ import FirebaseAuth
 import AuthenticationServices
 import CryptoKit
 
-// MARK: - Auth User Model
-public struct InFireStudioUser {
-    public let uid: String
-    public let email: String?
-    public let displayName: String?
-    public let photoURL: URL?
-    public let phoneNumber: String?
-    public let isEmailVerified: Bool
-    public let creationDate: Date?
-    public let lastSignInDate: Date?
-    public let providerData: [String]
-    
-    public init(from firebaseUser: User) {
-        self.uid = firebaseUser.uid
-        self.email = firebaseUser.email
-        self.displayName = firebaseUser.displayName
-        self.photoURL = firebaseUser.photoURL
-        self.phoneNumber = firebaseUser.phoneNumber
-        self.isEmailVerified = firebaseUser.isEmailVerified
-        self.creationDate = firebaseUser.metadata.creationDate
-        self.lastSignInDate = firebaseUser.metadata.lastSignInDate
-        self.providerData = firebaseUser.providerData.map { $0.providerID }
-    }
-}
-
-// MARK: - Auth Provider Types
-public enum AuthProvider {
-    case email
-    case google
-    case apple
-    case phone
-    case anonymous
-    case facebook
-    case twitter
-}
 
 // MARK: - Firebase Auth Manager
 @MainActor
@@ -316,6 +281,7 @@ extension FirebaseAuthenticationManager {
                     completion(.failure(error))
                 } else if let user = result?.user {
                     let inFireUser = InFireStudioUser(from: user)
+                    UserDefaultsManager.shared.saveUserData(inFireUser)
                     completion(.success(inFireUser))
                 } else {
                     completion(.failure(InFireAuthError.unknownError))
@@ -514,33 +480,6 @@ extension FirebaseAuthenticationManager: ASAuthorizationControllerPresentationCo
             return ASPresentationAnchor()
         }
         return window
-    }
-}
-
-// MARK: - Custom Errors
-public enum InFireAuthError: LocalizedError {
-    case noCurrentUser
-    case unknownError
-    case googleConfigurationError
-    case googleSignInFailed
-    case appleSignInFailed
-    case phoneVerificationFailed
-    
-    public var errorDescription: String? {
-        switch self {
-        case .noCurrentUser:
-            return "No current user found"
-        case .unknownError:
-            return "An unknown error occurred"
-        case .googleConfigurationError:
-            return "Google Sign-In configuration error"
-        case .googleSignInFailed:
-            return "Google Sign-In failed"
-        case .appleSignInFailed:
-            return "Apple Sign-In failed"
-        case .phoneVerificationFailed:
-            return "Phone verification failed"
-        }
     }
 }
 

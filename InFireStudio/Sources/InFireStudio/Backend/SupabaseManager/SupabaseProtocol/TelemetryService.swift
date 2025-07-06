@@ -70,6 +70,17 @@ public final class SupabaseLogService: LogService {
             print("Feedback Insert Error:\(error.localizedDescription)")
         }
     }
+    
+    /// Yeni uygulamanın olup olmadığını kontrol ettikten sonra gösteriminindeki detayları verir.
+    ///
+    public func fetchFeedbackPopup() async throws -> [FeedbackConfig] {
+        let instruments: [FeedbackConfig] = try await client
+            .from("feedback_config")
+            .select()
+            .execute()
+            .value
+        return instruments
+    }
 
 }
 
@@ -101,3 +112,55 @@ public struct Instrument: Codable {
     let hard_paywall: Bool
     let show_new_app: String
 }
+
+
+// Move File
+
+
+/// feedback_config tablosundaki bir satırı temsil eder
+public struct FeedbackConfig: Codable, Identifiable, Sendable {
+    /// UUID (primary key)
+    public let id: UUID
+
+    /// Oluşturulma zamanı (Postgres timestamp with time zone)
+    public let createdAt: Date
+
+    /// "rating" veya "chat"
+    public let feedbackType: FeedbackType
+
+    /// Formun aktif/pasif durumu
+    public let available: Bool
+
+    /// Lokalize başlıklar: ["en": "...", "tr": "...", ...]
+    public let title: [String:String]
+
+    /// Lokalize teşekkür mesajları
+    public let thankYouMessage: [String:String]
+
+    /// Lokalize buton metinleri
+    public let sendButtonText: [String:String]
+    
+    public let appName: String
+    
+    public let subtitle: [String:String]
+    public let dontShowButtonTitle: [String:String]
+
+    public enum CodingKeys: String, CodingKey {
+        case id
+        case createdAt        = "created_at"
+        case feedbackType     = "feedback_type"
+        case available
+        case title
+        case thankYouMessage  = "thank_you_message"
+        case sendButtonText   = "send_button_text"
+        case appName          = "app_name"
+        case subtitle
+        case dontShowButtonTitle = "dont_show_button"
+    }
+
+    public enum FeedbackType: String, Codable, Sendable {
+        case rating
+        case chat
+    }
+}
+

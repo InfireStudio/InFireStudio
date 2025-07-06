@@ -45,23 +45,23 @@ public class SettingsManager: NSObject {
     }
     
     public func createSettingsViewController(fromBundle fileName: String) -> UIViewController? {
-            print("SettingsManager: Looking for file: \(fileName).json")
-            
-            guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {
-                print("SettingsManager: JSON file not found in bundle: \(fileName).json")
-                return nil
-            }
-            
-            print("SettingsManager: Found JSON file at path: \(path)")
-            
-            guard let data = NSData(contentsOfFile: path) as Data? else {
-                print("SettingsManager: Could not read data from file")
-                return nil
-            }
-            
-            print("SettingsManager: Successfully read \(data.count) bytes from JSON file")
-            return createSettingsViewController(with: data)
+        print("SettingsManager: Looking for file: \(fileName).json")
+        
+        guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {
+            print("SettingsManager: JSON file not found in bundle: \(fileName).json")
+            return nil
         }
+        
+        print("SettingsManager: Found JSON file at path: \(path)")
+        
+        guard let data = NSData(contentsOfFile: path) as Data? else {
+            print("SettingsManager: Could not read data from file")
+            return nil
+        }
+        
+        print("SettingsManager: Successfully read \(data.count) bytes from JSON file")
+        return createSettingsViewController(with: data)
+    }
         
         // MARK: - Private Methods
         private func parseJSON(_ data: Data) -> SettingsConfig? {

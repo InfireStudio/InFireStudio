@@ -10,6 +10,7 @@ import UIKit
 
 // MARK: - Data Models
 public struct SettingsConfig: Codable {
+    let background: String
     let settings: Settings
 }
 
