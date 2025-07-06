@@ -1,16 +1,18 @@
-## Hi there 👋
+# InFireStudio SDK
 
-<!--
-**InfireStudio/InFireStudio** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Firebase, Supabase, Mixpanel ve RevenueCat entegrasyonları için Swift SDK.
 
-Here are some ideas to get you started:
+## Kurulum
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+### Swift Package Manager ile
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/InFireStudio/InFireStudio.git", from: "1.0.0")
+]
+
+
+## Requirement:
+iOS 13.0+
+macOS 11.0+
+Swift 6.0+
